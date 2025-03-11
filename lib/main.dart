@@ -255,11 +255,17 @@ class _WineGameScreenState extends State<WineGameScreen> {
             Expanded(
               child: DragTarget<Wine>(
                 builder: (context, candidateData, rejectedData) {
-                  return ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: _classificationRows[index]
-                        .map((wine) => _buildPlacedWineCard(wine))
-                        .toList(),
+                  return Container(
+                    // Change the background color if a card is hovering over the drop area
+                    color: candidateData.isNotEmpty
+                        ? _getClassificationColor(classification).withOpacity(0.3)
+                        : Colors.transparent,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: _classificationRows[index]
+                          .map((wine) => _buildPlacedWineCard(wine))
+                          .toList(),
+                    ),
                   );
                 },
                 onWillAccept: (wine) {
