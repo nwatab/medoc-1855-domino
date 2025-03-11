@@ -60369,7 +60369,7 @@ if(r)q.b.pop()
 return!0},
 $S:43}
 A.AP.prototype={
-R(a){return new A.rd(B.Lj,"Medoc 61 Fan Tan",A.aau(null,"Georgia",B.Db,null),!1,null)}}
+R(a){return new A.rd(B.Lj,"M\xe9doc 61 Fan Tan (1855)",A.aau(null,"Georgia",B.Db,null),!1,null)}}
 A.a5.prototype={}
 A.uA.prototype={
 al(){var s=t.s
