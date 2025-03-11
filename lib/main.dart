@@ -44,10 +44,27 @@ class WineGameScreen extends StatefulWidget {
 class _WineGameScreenState extends State<WineGameScreen> {
   late List<Wine> _allWines;
   final List<Wine> _placedWines = [];
-  
-  // Classification rows (1ere to 5eme)
-  final List<List<Wine>> _classificationRows = [[], [], [], [], []];
-  
+
+  // Define classifications and areas.
+  final List<String> _classifications = [
+    "1ere Cru",
+    "2eme Cru",
+    "3eme Cru",
+    "4eme Cru",
+    "5eme Cru",
+  ];
+
+  final List<String> _areas = [
+    "Margaux",
+    "Pauillac",
+    "Saint-Julien",
+    "Saint-Estèphe",
+    "Haut-Médoc",
+  ];
+
+  // Target matrix: a 5x5 grid (each cell is a list of wines dropped there).
+  late List<List<List<Wine>>> _targetMatrix;
+
   @override
   void initState() {
     super.initState();
@@ -126,15 +143,17 @@ class _WineGameScreenState extends State<WineGameScreen> {
       Wine(name: "Château Croizet-Bages", municipality: "Pauillac", classification: "5eme Cru"),
       Wine(name: "Château Cantemerle", municipality: "Haut-Médoc", classification: "5eme Cru"),
     ];
-    
-    // Shuffle wines for game
+
     _allWines.shuffle();
+
+    // Initialize a 5x5 empty matrix.
+    _targetMatrix = List.generate(5, (_) => List.generate(5, (_) => []));
   }
 
-  void _placeWine(Wine wine, int classificationIndex) {
+  void _placeWine(Wine wine, int classIndex, int areaIndex) {
     setState(() {
       wine.isPlaced = true;
-      _classificationRows[classificationIndex].add(wine);
+      _targetMatrix[classIndex][areaIndex].add(wine);
       _placedWines.add(wine);
     });
   }
@@ -142,8 +161,11 @@ class _WineGameScreenState extends State<WineGameScreen> {
   void _returnWineToHand(Wine wine) {
     setState(() {
       wine.isPlaced = false;
-      for (var row in _classificationRows) {
-        row.remove(wine);
+      // Remove wine from all cells in the matrix.
+      for (var row in _targetMatrix) {
+        for (var cell in row) {
+          cell.remove(wine);
+        }
       }
       _placedWines.remove(wine);
     });
@@ -161,9 +183,6 @@ class _WineGameScreenState extends State<WineGameScreen> {
               setState(() {
                 _initializeWines();
                 _placedWines.clear();
-                for (var row in _classificationRows) {
-                  row.clear();
-                }
               });
             },
           ),
@@ -171,24 +190,15 @@ class _WineGameScreenState extends State<WineGameScreen> {
       ),
       body: Column(
         children: [
-          // Main game board - Matrix for classifications
+          // Game board: 5x5 target matrix.
           Expanded(
             flex: 5,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                children: [
-                  _buildClassificationRow("1ere Cru", 0),
-                  _buildClassificationRow("2eme Cru", 1),
-                  _buildClassificationRow("3eme Cru", 2),
-                  _buildClassificationRow("4eme Cru", 3),
-                  _buildClassificationRow("5eme Cru", 4),
-                ],
-              ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildMatrix(),
             ),
           ),
-          
-          // Wine cards in hand
+          // Wine cards in hand.
           Expanded(
             flex: 3,
             child: Container(
@@ -231,54 +241,103 @@ class _WineGameScreenState extends State<WineGameScreen> {
     );
   }
 
-  Widget _buildClassificationRow(String classification, int index) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-          color: _getClassificationColor(classification).withOpacity(0.1),
-          border: Border.all(color: _getClassificationColor(classification)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
+  Widget _buildMatrix() {
+    return Column(
+      children: [
+        // Header row for area names.
+        Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                classification,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: _getClassificationColor(classification),
+            Container(
+              width: 100,
+              height: 50,
+              alignment: Alignment.center,
+              child: const Text(''),
+            ),
+            ..._areas.map((area) {
+              return Expanded(
+                child: Container(
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: Text(
+                    area,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: DragTarget<Wine>(
-                builder: (context, candidateData, rejectedData) {
-                  return Container(
-                    // Change the background color if a card is hovering over the drop area
-                    color: candidateData.isNotEmpty
-                        ? _getClassificationColor(classification).withOpacity(0.3)
-                        : Colors.transparent,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: _classificationRows[index]
-                          .map((wine) => _buildPlacedWineCard(wine))
-                          .toList(),
-                    ),
-                  );
-                },
-                onWillAccept: (wine) {
-                  return wine != null && wine.classification == classification;
-                },
-                onAccept: (wine) {
-                  _placeWine(wine, index);
-                },
-              ),
-            ),
+              );
+            }).toList(),
           ],
         ),
-      ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _classifications.length,
+            itemBuilder: (context, classIndex) {
+              String classification = _classifications[classIndex];
+              return SizedBox(
+                height: 80,
+                child: Row(
+                  children: [
+                    // Classification label on the left.
+                    Container(
+                      width: 100,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        color: _getClassificationColor(classification).withOpacity(0.1),
+                      ),
+                      child: Text(
+                        classification,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: _getClassificationColor(classification),
+                        ),
+                      ),
+                    ),
+                    // Build one cell per area.
+                    ...List.generate(_areas.length, (areaIndex) {
+                      String area = _areas[areaIndex];
+                      return Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: _getClassificationColor(classification)),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: DragTarget<Wine>(
+                            builder: (context, candidateData, rejectedData) {
+                              return Container(
+                                color: candidateData.isNotEmpty
+                                    ? _getClassificationColor(classification).withOpacity(0.3)
+                                    : Colors.transparent,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: _targetMatrix[classIndex][areaIndex]
+                                      .map((wine) => _buildPlacedWineCard(wine))
+                                      .toList(),
+                                ),
+                              );
+                            },
+                            onWillAccept: (wine) {
+                              return wine != null &&
+                                  wine.classification == classification &&
+                                  wine.municipality == area;
+                            },
+                            onAccept: (wine) {
+                              _placeWine(wine, classIndex, areaIndex);
+                            },
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
