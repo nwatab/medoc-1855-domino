@@ -55,10 +55,10 @@ class _WineGameScreenState extends State<WineGameScreen> {
   ];
 
   final List<String> _areas = [
-    "Margaux",
+    "Saint-Estèphe",
     "Pauillac",
     "Saint-Julien",
-    "Saint-Estèphe",
+    "Margaux",
     "Haut-Médoc",
   ];
 
