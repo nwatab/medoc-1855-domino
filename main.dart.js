@@ -60373,7 +60373,7 @@ R(a){return new A.rd(B.Lj,"Medoc 61 Fan Tan",A.aau(null,"Georgia",B.Db,null),!1,
 A.a5.prototype={}
 A.uA.prototype={
 al(){var s=t.s
-return new A.JX(A.a([],t.fs),A.a(["1ere Cru","2eme Cru","3eme Cru","4eme Cru","5eme Cru"],s),A.a(["Margaux","Pauillac","Saint-Julien","Saint-Est\xe8phe","Haut-M\xe9doc"],s),B.j)}}
+return new A.JX(A.a([],t.fs),A.a(["1ere Cru","2eme Cru","3eme Cru","4eme Cru","5eme Cru"],s),A.a(["Saint-Est\xe8phe","Pauillac","Saint-Julien","Margaux","Haut-M\xe9doc"],s),B.j)}}
 A.JX.prototype={
 aE(){this.b0()
 this.CN()},
