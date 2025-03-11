@@ -74,74 +74,74 @@ class _WineGameScreenState extends State<WineGameScreen> {
   void _initializeWines() {
     _allWines = [
       // 1re Cru (Premier Cru)
-      Wine(name: "Château Lafite Rothschild", municipality: "Pauillac", classification: "1re Crû"),
-      Wine(name: "Château Latour", municipality: "Pauillac", classification: "1re Crû"),
-      Wine(name: "Château Margaux", municipality: "Margaux", classification: "1re Crû"),
-      Wine(name: "Château Mouton Rothschild", municipality: "Pauillac", classification: "1re Crû"),
+      Wine(name: "Château Lafite Rothschild", municipality: "Pauillac", classification: "1res Crûs"),
+      Wine(name: "Château Latour", municipality: "Pauillac", classification: "1res Crûs"),
+      Wine(name: "Château Margaux", municipality: "Margaux", classification: "1res Crûs"),
+      Wine(name: "Château Mouton Rothschild", municipality: "Pauillac", classification: "1res Crûs"),
       
       // 2ème Cru (Deuxieme Cru)
-      Wine(name: "Château Rauzan-Ségla", municipality: "Margaux", classification: "2ème Crû"),
-      Wine(name: "Château Rauzan-Gassies", municipality: "Margaux", classification: "2ème Crû"),
-      Wine(name: "Château Léoville-Las Cases", municipality: "Saint-Julien", classification: "2ème Crû"),
-      Wine(name: "Château Léoville-Poyferré", municipality: "Saint-Julien", classification: "2ème Crû"),
-      Wine(name: "Château Léoville-Barton", municipality: "Saint-Julien", classification: "2ème Crû"),
-      Wine(name: "Château Durfort-Vivens", municipality: "Margaux", classification: "2ème Crû"),
-      Wine(name: "Château Gruaud-Larose", municipality: "Saint-Julien", classification: "2ème Crû"),
-      Wine(name: "Château Lascombes", municipality: "Margaux", classification: "2ème Crû"),
-      Wine(name: "Château Brane-Cantenac", municipality: "Margaux", classification: "2ème Crû"),
-      Wine(name: "Château Pichon-Longueville Baron", municipality: "Pauillac", classification: "2ème Crû"),
-      Wine(name: "Château Pichon-Longueville Comtesse de Lalande", municipality: "Pauillac", classification: "2ème Crû"),
-      Wine(name: "Château Ducru-Beaucaillou", municipality: "Saint-Julien", classification: "2ème Crû"),
-      Wine(name: "Château Cos d'Estournel", municipality: "Saint-Estèphe", classification: "2ème Crû"),
-      Wine(name: "Château Montrose", municipality: "Saint-Estèphe", classification: "2ème Crû"),
+      Wine(name: "Château Rauzan-Ségla", municipality: "Margaux", classification: "2èmes Crûs"),
+      Wine(name: "Château Rauzan-Gassies", municipality: "Margaux", classification: "2èmes Crûs"),
+      Wine(name: "Château Léoville-Las Cases", municipality: "Saint-Julien", classification: "2èmes Crûs"),
+      Wine(name: "Château Léoville-Poyferré", municipality: "Saint-Julien", classification: "2èmes Crûs"),
+      Wine(name: "Château Léoville-Barton", municipality: "Saint-Julien", classification: "2èmes Crûs"),
+      Wine(name: "Château Durfort-Vivens", municipality: "Margaux", classification: "2èmes Crûs"),
+      Wine(name: "Château Gruaud-Larose", municipality: "Saint-Julien", classification: "2èmes Crûs"),
+      Wine(name: "Château Lascombes", municipality: "Margaux", classification: "2èmes Crûs"),
+      Wine(name: "Château Brane-Cantenac", municipality: "Margaux", classification: "2èmes Crûs"),
+      Wine(name: "Château Pichon-Longueville Baron", municipality: "Pauillac", classification: "2èmes Crûs"),
+      Wine(name: "Château Pichon-Longueville Comtesse de Lalande", municipality: "Pauillac", classification: "2èmes Crûs"),
+      Wine(name: "Château Ducru-Beaucaillou", municipality: "Saint-Julien", classification: "2èmes Crûs"),
+      Wine(name: "Château Cos d'Estournel", municipality: "Saint-Estèphe", classification: "2èmes Crûs"),
+      Wine(name: "Château Montrose", municipality: "Saint-Estèphe", classification: "2èmes Crûs"),
       
       // 3ème Cru (Troisieme Cru)
-      Wine(name: "Château Giscours", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Kirwan", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château d'Issan", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Lagrange", municipality: "Saint-Julien", classification: "3ème Crû"),
-      Wine(name: "Château Langoa Barton", municipality: "Saint-Julien", classification: "3ème Crû"),
-      Wine(name: "Château Malescot St. Exupéry", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Cantenac Brown", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Palmer", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château La Lagune", municipality: "Haut-Médoc", classification: "3ème Crû"),
-      Wine(name: "Château Desmirail", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Calon-Ségur", municipality: "Saint-Estèphe", classification: "3ème Crû"),
-      Wine(name: "Château Ferrière", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Marquis d'Alesme Becker", municipality: "Margaux", classification: "3ème Crû"),
-      Wine(name: "Château Boyd-Cantenac", municipality: "Margaux", classification: "3ème Crû"),
+      Wine(name: "Château Giscours", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Kirwan", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château d'Issan", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Lagrange", municipality: "Saint-Julien", classification: "3èmes Crûs"),
+      Wine(name: "Château Langoa Barton", municipality: "Saint-Julien", classification: "3èmes Crûs"),
+      Wine(name: "Château Malescot St. Exupéry", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Cantenac Brown", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Palmer", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château La Lagune", municipality: "Haut-Médoc", classification: "3èmes Crûs"),
+      Wine(name: "Château Desmirail", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Calon-Ségur", municipality: "Saint-Estèphe", classification: "3èmes Crûs"),
+      Wine(name: "Château Ferrière", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Marquis d'Alesme Becker", municipality: "Margaux", classification: "3èmes Crûs"),
+      Wine(name: "Château Boyd-Cantenac", municipality: "Margaux", classification: "3èmes Crûs"),
       
       // 4ème Cru (Quatrieme Cru)
-      Wine(name: "Château Saint-Pierre", municipality: "Saint-Julien", classification: "4ème Crû"),
-      Wine(name: "Château Talbot", municipality: "Saint-Julien", classification: "4ème Crû"),
-      Wine(name: "Château Branaire-DuCrû", municipality: "Saint-Julien", classification: "4ème Crû"),
-      Wine(name: "Château Duhart-Milon", municipality: "Pauillac", classification: "4ème Crû"),
-      Wine(name: "Château Pouget", municipality: "Margaux", classification: "4ème Crû"),
-      Wine(name: "Château La Tour Carnet", municipality: "Haut-Médoc", classification: "4ème Crû"),
-      Wine(name: "Château Lafon-Rochet", municipality: "Saint-Estèphe", classification: "4ème Crû"),
-      Wine(name: "Château Beychevelle", municipality: "Saint-Julien", classification: "4ème Crû"),
-      Wine(name: "Château Prieuré-Lichine", municipality: "Margaux", classification: "4ème Crû"),
-      Wine(name: "Château Marquis de Terme", municipality: "Margaux", classification: "4ème Crû"),
+      Wine(name: "Château Saint-Pierre", municipality: "Saint-Julien", classification: "4èmes Crûs"),
+      Wine(name: "Château Talbot", municipality: "Saint-Julien", classification: "4èmes Crûs"),
+      Wine(name: "Château Branaire-DuCrû", municipality: "Saint-Julien", classification: "4èmes Crûs"),
+      Wine(name: "Château Duhart-Milon", municipality: "Pauillac", classification: "4èmes Crûs"),
+      Wine(name: "Château Pouget", municipality: "Margaux", classification: "4èmes Crûs"),
+      Wine(name: "Château La Tour Carnet", municipality: "Haut-Médoc", classification: "4èmes Crûs"),
+      Wine(name: "Château Lafon-Rochet", municipality: "Saint-Estèphe", classification: "4èmes Crûs"),
+      Wine(name: "Château Beychevelle", municipality: "Saint-Julien", classification: "4èmes Crûs"),
+      Wine(name: "Château Prieuré-Lichine", municipality: "Margaux", classification: "4èmes Crûs"),
+      Wine(name: "Château Marquis de Terme", municipality: "Margaux", classification: "4èmes Crûs"),
       
       // 5ème Cru (Cinquieme Cru)
-      Wine(name: "Château Pontet-Canet", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Batailley", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Grand-Puy-Lacoste", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Grand-Puy-Ducasse", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Lynch-Bages", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Lynch-Moussas", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Dauzac", municipality: "Margaux", classification: "5ème Crû"),
-      Wine(name: "Château d'Armailhac", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château du Tertre", municipality: "Margaux", classification: "5ème Crû"),
-      Wine(name: "Château Haut-Batailley", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Haut-Bages Libéral", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Pédesclaux", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Belgrave", municipality: "Haut-Médoc", classification: "5ème Crû"),
-      Wine(name: "Château de Camensac", municipality: "Haut-Médoc", classification: "5ème Crû"),
-      Wine(name: "Château Cos Labory", municipality: "Saint-Estèphe", classification: "5ème Crû"),
-      Wine(name: "Château Clerc Milon", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Croizet-Bages", municipality: "Pauillac", classification: "5ème Crû"),
-      Wine(name: "Château Cantemerle", municipality: "Haut-Médoc", classification: "5ème Crû"),
+      Wine(name: "Château Pontet-Canet", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Batailley", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Grand-Puy-Lacoste", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Grand-Puy-Ducasse", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Lynch-Bages", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Lynch-Moussas", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Dauzac", municipality: "Margaux", classification: "5èmes Crûs"),
+      Wine(name: "Château d'Armailhac", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château du Tertre", municipality: "Margaux", classification: "5èmes Crûs"),
+      Wine(name: "Château Haut-Batailley", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Haut-Bages Libéral", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Pédesclaux", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Belgrave", municipality: "Haut-Médoc", classification: "5èmes Crûs"),
+      Wine(name: "Château de Camensac", municipality: "Haut-Médoc", classification: "5èmes Crûs"),
+      Wine(name: "Château Cos Labory", municipality: "Saint-Estèphe", classification: "5èmes Crûs"),
+      Wine(name: "Château Clerc Milon", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Croizet-Bages", municipality: "Pauillac", classification: "5èmes Crûs"),
+      Wine(name: "Château Cantemerle", municipality: "Haut-Médoc", classification: "5èmes Crûs"),
     ];
 
     _allWines.shuffle();
@@ -287,13 +287,31 @@ class _WineGameScreenState extends State<WineGameScreen> {
                         border: Border.all(color: Colors.grey),
                         color: _getClassificationColor(classification).withOpacity(0.1),
                       ),
-                      child: Text(
-                        classification,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: _getClassificationColor(classification),
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: _getClassificationColor(classification),
+                          ),
+                          children: [
+                            TextSpan(text: classification[0]),
+                            // superscript "res" and "èmes"
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.baseline,
+                              baseline: TextBaseline.alphabetic,
+                              child: Transform.translate(
+                                offset: const Offset(0, -5),
+                                child: Text(
+                                  classification.substring(1, classification.indexOf(" ")),
+                                  style: TextStyle(fontSize: 11),
+                                ),
+                              ),
+                            ),
+                            TextSpan(text: classification.substring(classification.indexOf(" "))),
+                          ],
                         ),
-                      ),
+                      )
+
                     ),
                     // Build one cell per area.
                     ...List.generate(_areas.length, (areaIndex) {
@@ -514,15 +532,15 @@ class _WineGameScreenState extends State<WineGameScreen> {
 
   Color _getClassificationColor(String classification) {
     switch (classification) {
-      case "1re Crû":
+      case "1res Crûs":
         return Colors.purple[900]!;
-      case "2ème Crû":
+      case "2èmes Crûs":
         return Colors.red[700]!;
-      case "3ème Crû":
+      case "3èmes Crûs":
         return Colors.blue[700]!;
-      case "4ème Crû":
+      case "4èmes Crûs":
         return Colors.green[700]!;
-      case "5ème Crû":
+      case "5èmes Crûs":
         return Colors.amber[700]!;
       default:
         return Colors.grey[700]!;
