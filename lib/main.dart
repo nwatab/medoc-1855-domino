@@ -204,30 +204,46 @@ class _WineGameScreenState extends State<WineGameScreen> {
                         border: Border.all(color: Colors.grey),
                         color: _getClassificationColor(classification).withOpacity(0.1),
                       ),
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: _getClassificationColor(classification),
-                          ),
-                          children: [
-                            TextSpan(text: classificationName[0]),
-                            // Superscript for "res" and "èmes"
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.baseline,
-                              baseline: TextBaseline.alphabetic,
-                              child: Transform.translate(
-                                offset: const Offset(0, -5),
-                                child: Text(
-                                  classificationName.substring(1, classificationName.indexOf(" ")),
-                                  style: TextStyle(fontSize: 11),
-                                ),
+                      child: Wrap(
+                        direction: Axis.vertical,
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: _getClassificationColor(classification),
                               ),
+                              children: [
+                                TextSpan(text: classificationName[0]),
+                                // Superscript for "res" and "èmes" with color
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.baseline,
+                                  baseline: TextBaseline.alphabetic,
+                                  child: Transform.translate(
+                                    offset: const Offset(0, -5),
+                                    child: Text(
+                                      classificationName.substring(1, classificationName.indexOf(" ")),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: _getClassificationColor(classification),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            TextSpan(text: classificationName.substring(classificationName.indexOf(" "))),
-                          ],
-                        ),
-                      )
+                          ),
+                          // Second line with remaining text
+                          Text(
+                            classificationName.substring(classificationName.indexOf(" ")),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: _getClassificationColor(classification),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     // Build one cell per municipality
                     ...List.generate(_municipalities.length, (areaIndex) {
