@@ -406,9 +406,9 @@ class _WineGameScreenState extends State<WineGameScreen> {
         ),
       ),
       childWhenDragging: Container(
-        width: 120,
-        height: 120,
-        margin: const EdgeInsets.all(4),
+        width: 98,
+        margin: const EdgeInsets.all(1),
+        padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
           color: Colors.grey[300],
           borderRadius: BorderRadius.circular(8),
@@ -416,10 +416,9 @@ class _WineGameScreenState extends State<WineGameScreen> {
         ),
       ),
       child: Container(
-        width: 120,
-        height: 120,
-        margin: const EdgeInsets.all(4),
-        padding: const EdgeInsets.all(8),
+        width: 98,
+        margin: const EdgeInsets.all(1),
+        padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
           color: _getMunicipalityColor(wine.municipality),
           borderRadius: BorderRadius.circular(8),
@@ -441,6 +440,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
+              softWrap: true,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
