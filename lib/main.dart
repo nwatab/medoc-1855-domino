@@ -438,14 +438,6 @@ class _WineGameScreenState extends State<WineGameScreen> {
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),
-            const SizedBox(height: 2),
-            Text(
-              wine.municipality.displayName,
-              style: const TextStyle(
-                fontSize: 9,
-                color: Colors.white,
-              ),
-            ),
           ],
         ),
       ),
