@@ -111,43 +111,41 @@ class _WineGameScreenState extends State<WineGameScreen> {
             ),
           ),
           // Wine cards in player's hand
-          Expanded(
-            flex: 3,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border(
-                  top: BorderSide(width: 2, color: Colors.grey[400]!),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      'Your Wine Cards',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: _allWines
-                          .where((wine) => !wine.isPlaced)
-                          .map((wine) => _buildWineCard(wine))
-                          .toList(),
-                    ),
-                  ),
-                ],
+          Container(
+            height: 120, // Fixed height of 120px
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              border: Border(
+                top: BorderSide(width: 2, color: Colors.grey[400]!),
               ),
             ),
-          ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Your Wine Cards',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: _allWines
+                        .where((wine) => !wine.isPlaced)
+                        .map((wine) => _buildWineCard(wine))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
