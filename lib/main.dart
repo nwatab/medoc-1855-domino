@@ -123,17 +123,6 @@ class _WineGameScreenState extends State<WineGameScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'Your Wine Cards',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
                 Expanded(
                   child: ListView(
                     scrollDirection: Axis.horizontal,
