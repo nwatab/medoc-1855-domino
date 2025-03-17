@@ -283,110 +283,122 @@ class _WineGameScreenState extends State<WineGameScreen> {
   }
 
   // Build a draggable wine card for the player's hand
-  Widget _buildWineCard(Wine wine) {
-    return Draggable<Wine>(
-      data: wine,
-      // Feedback widget (shown while dragging)
-      feedback: Material(
-        elevation: 4,
-        child: Container(
-          width: 120,
-          height: 120,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _getMunicipalityColor(wine.municipality),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                wine.name,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                wine.municipality.displayName,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                wine.classification.displayName,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.white70,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      // Widget shown in place of the dragged card
-      childWhenDragging: Container(
-        width: 120,
-        height: 120,
-        margin: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[400]!),
-        ),
-      ),
-      // The actual card widget
+Widget _buildWineCard(Wine wine) {
+  return Draggable<Wine>(
+    data: wine,
+    // Feedback widget (shown while dragging)
+    feedback: Material(
+      elevation: 4,
       child: Container(
         width: 120,
         height: 120,
-        margin: const EdgeInsets.all(4),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: _getMunicipalityColor(wine.municipality),
           borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 3,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              wine.name,
+              'Château',
+              style: const TextStyle(
+                fontSize: 8,
+                color: Colors.white70,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              wine.name.substring(wine.name.indexOf('Château ') + 8),
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
             ),
-            const SizedBox(height: 4),
-            Text(
-              wine.municipality.displayName,
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white,
-              ),
+            // const SizedBox(height: 1),
+            // Text(
+            //   wine.municipality.displayName,
+            //   style: const TextStyle(
+            //     fontSize: 10,
+            //     color: Colors.white,
+            //   ),
+            // ),
+            // Text(
+            //   wine.classification.displayName,
+            //   style: const TextStyle(
+            //     fontSize: 10,
+            //     color: Colors.white70,
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    ),
+    // Widget shown in place of the dragged card
+    childWhenDragging: Container(
+      width: 120,
+      height: 120,
+      margin: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[400]!),
+      ),
+    ),
+    // The actual card widget
+    child: Container(
+      width: 120,
+      height: 120,
+      margin: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _getMunicipalityColor(wine.municipality),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 3,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Château',
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.white70,
             ),
-            Text(
-              wine.classification.displayName,
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white70,
-              ),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            wine.name.substring(wine.name.indexOf('Château ') + 8),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
+            textAlign: TextAlign.center,
+          ),
+          // const SizedBox(height: 4),
+          // Text(
+          //   wine.municipality.displayName,
+          //   style: const TextStyle(
+          //     fontSize: 10,
+          //     color: Colors.white,
+          //   ),
+          // ),
+          // Text(
+          //     wine.classification.displayName,
+          //     style: const TextStyle(
+          //       fontSize: 10,
+          //       color: Colors.white70,
+          //     ),
+          //   ),
           ],
         ),
       ),
@@ -416,22 +428,34 @@ class _WineGameScreenState extends State<WineGameScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              wine.name,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            RichText(
               textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Château ',
+                    style: const TextStyle(
+                      fontSize: 9,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  TextSpan(
+                    text: wine.name.substring(wine.name.indexOf('Château ') + 8),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
 
   // Get color based on municipality for wine cards
   Color _getMunicipalityColor(Municipality municipality) {
