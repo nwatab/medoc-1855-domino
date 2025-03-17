@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'wine_data.dart'; // Import the wine data file
+import 'wine_data.dart';
 
 void main() {
   runApp(const MedocFanTanApp());
 }
+
+enum GameMode { Easy, Standard }
 
 class MedocFanTanApp extends StatelessWidget {
   const MedocFanTanApp({Key? key}) : super(key: key);
@@ -16,50 +18,163 @@ class MedocFanTanApp extends StatelessWidget {
         primarySwatch: Colors.red,
         fontFamily: 'Georgia',
       ),
-      home: const WineGameScreen(),
+      home: const StartScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
+// --------------------
+// Start Screen
+// --------------------
+class StartScreen extends StatelessWidget {
+  const StartScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Médoc 61 Fan Tan (1855)')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              child: const Text('Standard Mode'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const WineGameScreen(gameMode: GameMode.Standard),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              child: const Text('Easy Mode'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const EasyModeCommuneSelectionScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --------------------
+// Easy Mode Commune Selection Screen
+// --------------------
+class EasyModeCommuneSelectionScreen extends StatelessWidget {
+  const EasyModeCommuneSelectionScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Use all municipalities defined in your wine_data.dart.
+    List<Municipality> communes = getAllMunicipalities();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Select a Commune for Easy Mode')),
+      body: ListView.builder(
+        itemCount: communes.length,
+        itemBuilder: (context, index) {
+          Municipality commune = communes[index];
+          return ListTile(
+            title: Text(commune.displayName),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => WineGameScreen(
+                    gameMode: GameMode.Easy,
+                    selectedMunicipality: commune,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+// --------------------
+// Modified Wine Game Screen
+// --------------------
 class WineGameScreen extends StatefulWidget {
-  const WineGameScreen({Key? key}) : super(key: key);
+  final GameMode gameMode;
+  final Municipality? selectedMunicipality; // used only in Easy mode
+
+  const WineGameScreen({
+    Key? key,
+    required this.gameMode,
+    this.selectedMunicipality,
+  }) : super(key: key);
 
   @override
   _WineGameScreenState createState() => _WineGameScreenState();
 }
 
 class _WineGameScreenState extends State<WineGameScreen> {
-  late List<Wine> _allWines;  // All wines in the game
-  final List<Wine> _placedWines = [];  // Wines that have been placed on the board
-  
-  // Lists of classifications and municipalities from enums
-  final List<Classification> _classifications = getAllClassifications();
-  final List<Municipality> _municipalities = getAllMunicipalities();
-  
-  // Target matrix: a 5x5 grid (each cell is a list of wines dropped there)
-  late List<List<List<Wine>>> _targetMatrix;
+  late List<Wine> _allWines; // Wine deck for the game
+  final List<Wine> _placedWines = []; // Wines placed on the board
+  late List<Classification> _classifications;
+  late List<Municipality> _municipalities;
+  late List<List<List<Wine>>> _targetMatrix; // target matrix (grid)
 
   @override
   void initState() {
     super.initState();
-    _initializeWines();
+    _classifications = getAllClassifications();
+    // For Easy mode, we only use the chosen commune; otherwise, all communes.
+    if (widget.gameMode == GameMode.Easy) {
+      _municipalities = [widget.selectedMunicipality!];
+      // Optionally, filter the wine deck to include only wines from the chosen commune.
+      _allWines = getWineData()
+          .where((wine) => wine.municipality == widget.selectedMunicipality)
+          .toList();
+    } else {
+      _municipalities = getAllMunicipalities();
+      _allWines = getWineData();
+    }
+    _allWines.shuffle();
+    _initializeTargetMatrix();
   }
 
-  // Initialize the game with a new set of shuffled wines
-  void _initializeWines() {
-    // Get wine data from separate file
-    _allWines = getWineData();
-    _allWines.shuffle();
-
-    // Initialize a 5x5 empty matrix (classifications x municipalities)
+  // Create the target matrix based on classifications and municipalities.
+  void _initializeTargetMatrix() {
     _targetMatrix = List.generate(
-      _classifications.length, 
-      (_) => List.generate(_municipalities.length, (_) => [])
+      _classifications.length,
+      (_) => List.generate(_municipalities.length, (_) => []),
     );
   }
 
-  // Place a wine on the board at the specified position
+  // Restart the game.
+  void _initializeWines() {
+    setState(() {
+      if (widget.gameMode == GameMode.Easy) {
+        _allWines = getWineData()
+            .where((wine) => wine.municipality == widget.selectedMunicipality)
+            .toList();
+      } else {
+        _allWines = getWineData();
+      }
+      _allWines.shuffle();
+      for (var wine in _allWines) {
+        wine.isPlaced = false;
+      }
+      _placedWines.clear();
+      _initializeTargetMatrix();
+    });
+  }
+
+  // Place a wine on the board.
   void _placeWine(Wine wine, int classIndex, int areaIndex) {
     setState(() {
       wine.isPlaced = true;
@@ -68,11 +183,10 @@ class _WineGameScreenState extends State<WineGameScreen> {
     });
   }
 
-  // Return a wine from the board back to the player's hand
+  // Return a wine back to the player's hand.
   void _returnWineToHand(Wine wine) {
     setState(() {
       wine.isPlaced = false;
-      // Remove wine from all cells in the matrix
       for (var row in _targetMatrix) {
         for (var cell in row) {
           cell.remove(wine);
@@ -86,23 +200,17 @@ class _WineGameScreenState extends State<WineGameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Médoc 61 Fan Tan (1855)'),
+        title: Text('Médoc 61 Fan Tan (1855) - ${widget.gameMode == GameMode.Easy ? "Easy Mode" : "Standard Mode"}'),
         actions: [
-          // Refresh button to restart the game
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                _initializeWines();
-                _placedWines.clear();
-              });
-            },
+            onPressed: _initializeWines,
           ),
         ],
       ),
       body: Column(
         children: [
-          // Game board: 5x5 target matrix
+          // Game board area.
           Expanded(
             flex: 5,
             child: Padding(
@@ -110,29 +218,20 @@ class _WineGameScreenState extends State<WineGameScreen> {
               child: _buildMatrix(),
             ),
           ),
-          // Wine cards in player's hand
+          // Player's wine cards.
           Container(
-            height: 120, // Fixed height of 120px
+            height: 120,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.grey[200],
-              border: Border(
-                top: BorderSide(width: 2, color: Colors.grey[400]!),
-              ),
+              border: Border(top: BorderSide(width: 2, color: Colors.grey[400]!)),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: _allWines
-                        .where((wine) => !wine.isPlaced)
-                        .map((wine) => _buildWineCard(wine))
-                        .toList(),
-                  ),
-                ),
-              ],
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: _allWines
+                  .where((wine) => !wine.isPlaced)
+                  .map((wine) => _buildWineCard(wine))
+                  .toList(),
             ),
           )
         ],
@@ -140,29 +239,25 @@ class _WineGameScreenState extends State<WineGameScreen> {
     );
   }
 
-  // Build the game board matrix
+  // Build the game board (matrix).
   Widget _buildMatrix() {
     return Column(
       children: [
-        // Header row for municipality names
+        // Header row for municipality names.
         Row(
           children: [
-            // Empty top-left corner cell
             Container(
               width: 100,
               height: 50,
               alignment: Alignment.center,
               child: const Text(''),
             ),
-            // Municipality column headers
             ..._municipalities.map((municipality) {
               return Expanded(
                 child: Container(
                   height: 50,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                  ),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
                   child: Text(
                     municipality.displayName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -172,7 +267,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
             }).toList(),
           ],
         ),
-        // Classification rows with drop targets
+        // Classification rows with drop targets.
         Expanded(
           child: ListView.builder(
             itemCount: _classifications.length,
@@ -183,7 +278,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
                 height: 80,
                 child: Row(
                   children: [
-                    // Classification label on the left
+                    // Classification label.
                     Container(
                       width: 100,
                       alignment: Alignment.center,
@@ -203,7 +298,6 @@ class _WineGameScreenState extends State<WineGameScreen> {
                               ),
                               children: [
                                 TextSpan(text: classificationName[0]),
-                                // Superscript for "res" and "èmes" with color
                                 WidgetSpan(
                                   alignment: PlaceholderAlignment.baseline,
                                   baseline: TextBaseline.alphabetic,
@@ -211,28 +305,21 @@ class _WineGameScreenState extends State<WineGameScreen> {
                                     offset: const Offset(0, -5),
                                     child: Text(
                                       classificationName.substring(1, classificationName.indexOf(" ")),
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: _getClassificationColor(classification),
-                                      ),
+                                      style: TextStyle(fontSize: 11, color: _getClassificationColor(classification)),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          // Second line with remaining text
                           Text(
                             classificationName.substring(classificationName.indexOf(" ")),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: _getClassificationColor(classification),
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: _getClassificationColor(classification)),
                           ),
                         ],
                       ),
                     ),
-                    // Build one cell per municipality
+                    // Drop targets for each municipality column.
                     ...List.generate(_municipalities.length, (areaIndex) {
                       Municipality municipality = _municipalities[areaIndex];
                       return Expanded(
@@ -242,14 +329,12 @@ class _WineGameScreenState extends State<WineGameScreen> {
                             border: Border.all(color: _getClassificationColor(classification)),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          // Drop target for wine cards
                           child: DragTarget<Wine>(
                             builder: (context, candidateData, rejectedData) {
                               return Container(
                                 color: candidateData.isNotEmpty
                                     ? _getClassificationColor(classification).withOpacity(0.3)
                                     : Colors.transparent,
-                                // Horizontal list of placed wines in this cell
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: _targetMatrix[classIndex][areaIndex]
@@ -258,13 +343,11 @@ class _WineGameScreenState extends State<WineGameScreen> {
                                 ),
                               );
                             },
-                            // Check if the wine can be placed in this cell
                             onWillAccept: (wine) {
                               return wine != null &&
                                   wine.classification == classification &&
                                   wine.municipality == municipality;
                             },
-                            // Handle wine placement when dropped
                             onAccept: (wine) {
                               _placeWine(wine, classIndex, areaIndex);
                             },
@@ -282,130 +365,83 @@ class _WineGameScreenState extends State<WineGameScreen> {
     );
   }
 
-  // Build a draggable wine card for the player's hand
-Widget _buildWineCard(Wine wine) {
-  return Draggable<Wine>(
-    data: wine,
-    // Feedback widget (shown while dragging)
-    feedback: Material(
-      elevation: 4,
+  // Build a draggable wine card.
+  Widget _buildWineCard(Wine wine) {
+    return Draggable<Wine>(
+      data: wine,
+      feedback: Material(
+        elevation: 4,
+        child: Container(
+          width: 120,
+          height: 120,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: _getMunicipalityColor(wine.municipality),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Château',
+                style: const TextStyle(fontSize: 8, color: Colors.white70),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                wine.name.substring(wine.name.indexOf('Château ') + 8),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+      childWhenDragging: Container(
+        width: 120,
+        height: 120,
+        margin: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey[400]!),
+        ),
+      ),
       child: Container(
         width: 120,
         height: 120,
+        margin: const EdgeInsets.all(4),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: _getMunicipalityColor(wine.municipality),
           borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 3,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Château',
-              style: const TextStyle(
-                fontSize: 8,
-                color: Colors.white70,
-              ),
+              style: const TextStyle(fontSize: 10, color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             Text(
               wine.name.substring(wine.name.indexOf('Château ') + 8),
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
               textAlign: TextAlign.center,
             ),
-            // const SizedBox(height: 1),
-            // Text(
-            //   wine.municipality.displayName,
-            //   style: const TextStyle(
-            //     fontSize: 10,
-            //     color: Colors.white,
-            //   ),
-            // ),
-            // Text(
-            //   wine.classification.displayName,
-            //   style: const TextStyle(
-            //     fontSize: 10,
-            //     color: Colors.white70,
-            //   ),
-            // ),
-          ],
-        ),
-      ),
-    ),
-    // Widget shown in place of the dragged card
-    childWhenDragging: Container(
-      width: 120,
-      height: 120,
-      margin: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[400]!),
-      ),
-    ),
-    // The actual card widget
-    child: Container(
-      width: 120,
-      height: 120,
-      margin: const EdgeInsets.all(4),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: _getMunicipalityColor(wine.municipality),
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 3,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Château',
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.white70,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            wine.name.substring(wine.name.indexOf('Château ') + 8),
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          // const SizedBox(height: 4),
-          // Text(
-          //   wine.municipality.displayName,
-          //   style: const TextStyle(
-          //     fontSize: 10,
-          //     color: Colors.white,
-          //   ),
-          // ),
-          // Text(
-          //     wine.classification.displayName,
-          //     style: const TextStyle(
-          //       fontSize: 10,
-          //       color: Colors.white70,
-          //     ),
-          //   ),
           ],
         ),
       ),
     );
   }
 
-  // Build a wine card that's been placed on the board
+  // Build a wine card that has been placed.
   Widget _buildPlacedWineCard(Wine wine) {
     return GestureDetector(
       onTap: () => _returnWineToHand(wine),
@@ -432,20 +468,13 @@ Widget _buildWineCard(Wine wine) {
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
-                  TextSpan(
+                  const TextSpan(
                     text: 'Château ',
-                    style: const TextStyle(
-                      fontSize: 9,
-                      color: Colors.white70,
-                    ),
+                    style: TextStyle(fontSize: 9, color: Colors.white70),
                   ),
                   TextSpan(
                     text: wine.name.substring(wine.name.indexOf('Château ') + 8),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ],
               ),
@@ -456,8 +485,7 @@ Widget _buildWineCard(Wine wine) {
     );
   }
 
-
-  // Get color based on municipality for wine cards
+  // Helper: get a color based on the wine's municipality.
   Color _getMunicipalityColor(Municipality municipality) {
     switch (municipality) {
       case Municipality.margaux:
@@ -473,7 +501,7 @@ Widget _buildWineCard(Wine wine) {
     }
   }
 
-  // Get color based on classification for the matrix cells
+  // Helper: get a color based on the classification.
   Color _getClassificationColor(Classification classification) {
     switch (classification) {
       case Classification.first:
