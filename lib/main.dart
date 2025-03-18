@@ -362,10 +362,10 @@ class _WineGameScreenState extends State<WineGameScreen> {
                       Municipality municipality = _municipalities[areaIndex];
                       return Expanded(
                         child: Container(
-                          margin: const EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(2),
                           decoration: BoxDecoration(
                             border: Border.all(color: _getClassificationColor(classification)),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                           child: DragTarget<Wine>(
                             builder: (context, candidateData, rejectedData) {
@@ -465,7 +465,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
           children: [
             Text(
               'Château',
-              style: const TextStyle(fontSize: 10, color: assortColor),
+              style: const TextStyle(fontSize: 8, color: assortColor),
               textAlign: TextAlign.center,
             ),
             Text(
@@ -506,7 +506,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
               children: [
                 const TextSpan(
                   text: 'Château ',
-                  style: TextStyle(fontSize: 9, color: assortColor),
+                  style: TextStyle(fontSize: 8, color: assortColor),
                 ),
                 TextSpan(
                   text: wine.name.substring(wine.name.indexOf('Château ') + 8),
@@ -538,17 +538,6 @@ class _WineGameScreenState extends State<WineGameScreen> {
 
   // Helper: get a color based on the classification.
   Color _getClassificationColor(Classification classification) {
-    switch (classification) {
-      case Classification.first:
-        return Colors.purple[900]!;
-      case Classification.second:
-        return Colors.red[700]!;
-      case Classification.third:
-        return Colors.blue[700]!;
-      case Classification.fourth:
-        return Colors.green[700]!;
-      case Classification.fifth:
-        return Colors.amber[700]!;
-    }
+    return accentColor;
   }
 }
