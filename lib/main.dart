@@ -5,6 +5,11 @@ void main() {
   runApp(const MedocFanTanApp());
 }
 
+// Define our custom color constants.
+const Color baseColor = Color(0xFF5E2129);    // 60% usage – background.
+const Color accentColor = Color(0xFF2C3E50);  // 10% usage – accent elements.
+const Color assortColor = Color(0xFFFAF3E0);  // 30% usage – main buttons, app bar, text, etc.
+
 enum GameMode { Easy, Standard }
 
 class MedocFanTanApp extends StatelessWidget {
@@ -12,12 +17,52 @@ class MedocFanTanApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = ThemeData(
+      // Create a color scheme that uses our custom colors.
+      colorScheme: ColorScheme(
+        brightness: Brightness.dark,
+        primary: assortColor,
+        onPrimary: baseColor,
+        secondary: accentColor,
+        onSecondary: assortColor,
+        background: baseColor,
+        onBackground: assortColor,
+        surface: assortColor,
+        onSurface: baseColor,
+        error: Colors.red,
+        onError: Colors.white,
+      ),
+      // Set the scaffold (background) color.
+      scaffoldBackgroundColor: baseColor,
+      // Configure the AppBar.
+      appBarTheme: AppBarTheme(
+        backgroundColor: assortColor,
+        foregroundColor: baseColor,
+        iconTheme: IconThemeData(color: accentColor),
+        titleTextStyle: const TextStyle(
+          color: baseColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      // Style ElevatedButtons.
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          primary: assortColor,
+          onPrimary: baseColor,
+        ),
+      ),
+      // Set a text theme so that default text uses assortColor.
+      textTheme: const TextTheme(
+        bodyText1: TextStyle(color: assortColor),
+        bodyText2: TextStyle(color: assortColor),
+      ),
+      fontFamily: 'Georgia',
+    );
+
     return MaterialApp(
       title: 'Médoc 61 Fan Tan (1855)',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        fontFamily: 'Georgia',
-      ),
+      theme: theme,
       home: const StartScreen(),
       debugShowCheckedModeBanner: false,
     );
@@ -33,6 +78,7 @@ class StartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // The AppBar now uses the updated theme.
       appBar: AppBar(title: const Text('Médoc 61 Fan Tan (1855)')),
       body: Center(
         child: Column(
@@ -85,7 +131,10 @@ class EasyModeCommuneSelectionScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           Municipality commune = communes[index];
           return ListTile(
-            title: Text(commune.displayName),
+            title: Text(
+              commune.displayName,
+              style: const TextStyle(color: assortColor),
+            ),
             onTap: () {
               Navigator.push(
                 context,
@@ -218,13 +267,14 @@ class _WineGameScreenState extends State<WineGameScreen> {
               child: _buildMatrix(),
             ),
           ),
-          // Player's wine cards.
+          // Player's wine cards area.
           Container(
             height: 120,
             padding: const EdgeInsets.all(8),
+            // Card placement area: background is assortColor.
             decoration: BoxDecoration(
-              color: Colors.grey[200],
-              border: Border(top: BorderSide(width: 2, color: Colors.grey[400]!)),
+              color: assortColor,
+              border: Border(top: BorderSide(width: 2, color: accentColor)),
             ),
             child: ListView(
               scrollDirection: Axis.horizontal,
@@ -260,7 +310,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
                   decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
                   child: Text(
                     municipality.displayName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: assortColor),
                   ),
                 ),
               );
@@ -291,30 +341,18 @@ class _WineGameScreenState extends State<WineGameScreen> {
                         crossAxisAlignment: WrapCrossAlignment.start,
                         children: [
                           RichText(
-                            text: TextSpan(
+                            text: const TextSpan(
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: _getClassificationColor(classification),
+                                color: assortColor,
                               ),
-                              children: [
-                                TextSpan(text: classificationName[0]),
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.baseline,
-                                  baseline: TextBaseline.alphabetic,
-                                  child: Transform.translate(
-                                    offset: const Offset(0, -5),
-                                    child: Text(
-                                      classificationName.substring(1, classificationName.indexOf(" ")),
-                                      style: TextStyle(fontSize: 11, color: _getClassificationColor(classification)),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              children: [],
                             ),
                           ),
+                          // Using simple Text widgets with assortColor for clarity.
                           Text(
-                            classificationName.substring(classificationName.indexOf(" ")),
-                            style: TextStyle(fontWeight: FontWeight.bold, color: _getClassificationColor(classification)),
+                            classificationName,
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: assortColor),
                           ),
                         ],
                       ),
@@ -376,7 +414,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
           height: 120,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: _getMunicipalityColor(wine.municipality),
+            color: accentColor, // Card color is now accentColor.
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -384,12 +422,12 @@ class _WineGameScreenState extends State<WineGameScreen> {
             children: [
               Text(
                 'Château',
-                style: const TextStyle(fontSize: 8, color: Colors.white70),
+                style: const TextStyle(fontSize: 8, color: assortColor),
                 textAlign: TextAlign.center,
               ),
               Text(
                 wine.name.substring(wine.name.indexOf('Château ') + 8),
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: assortColor),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -412,7 +450,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
         margin: const EdgeInsets.all(4),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: _getMunicipalityColor(wine.municipality),
+          color: accentColor, // Card color is now accentColor.
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -427,12 +465,12 @@ class _WineGameScreenState extends State<WineGameScreen> {
           children: [
             Text(
               'Château',
-              style: const TextStyle(fontSize: 10, color: Colors.white70),
+              style: const TextStyle(fontSize: 10, color: assortColor),
               textAlign: TextAlign.center,
             ),
             Text(
               wine.name.substring(wine.name.indexOf('Château ') + 8),
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: assortColor),
               textAlign: TextAlign.center,
             ),
           ],
@@ -451,7 +489,7 @@ class _WineGameScreenState extends State<WineGameScreen> {
         margin: const EdgeInsets.all(4),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: _getMunicipalityColor(wine.municipality),
+          color: accentColor, // Card color is now accentColor.
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -461,25 +499,22 @@ class _WineGameScreenState extends State<WineGameScreen> {
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'Château ',
-                    style: TextStyle(fontSize: 9, color: Colors.white70),
-                  ),
-                  TextSpan(
-                    text: wine.name.substring(wine.name.indexOf('Château ') + 8),
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ],
-              ),
+        child: Center(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                const TextSpan(
+                  text: 'Château ',
+                  style: TextStyle(fontSize: 9, color: assortColor),
+                ),
+                TextSpan(
+                  text: wine.name.substring(wine.name.indexOf('Château ') + 8),
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: assortColor),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
