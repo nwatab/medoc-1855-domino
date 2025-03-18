@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 import '../data/wine_data.dart';
 
@@ -22,6 +24,14 @@ class _WineGameScreenState extends State<WineGameScreen> {
   late List<Classification> _classifications;
   late List<Municipality> _municipalities;
   late List<List<List<Wine>>> _targetMatrix;
+  
+  // Timer variables
+  Stopwatch _stopwatch = Stopwatch();
+  Timer? _timer;
+  int _elapsedTimeInSeconds = 0;
+  
+  // Game state
+  bool _gameCompleted = false;
 
   @override
   void initState() {
@@ -38,6 +48,68 @@ class _WineGameScreenState extends State<WineGameScreen> {
     }
     _allWines.shuffle();
     _initializeTargetMatrix();
+    
+    // Start the timer
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _stopTimer();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _stopwatch.start();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _elapsedTimeInSeconds = _stopwatch.elapsed.inSeconds;
+      });
+    });
+  }
+
+  void _stopTimer() {
+    _stopwatch.stop();
+    _timer?.cancel();
+  }
+
+  void _resetTimer() {
+    _stopwatch.reset();
+    _elapsedTimeInSeconds = 0;
+  }
+
+  String _formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+  void _saveTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    String timeKey;
+    
+    if (widget.gameMode == GameMode.Easy) {
+      // For easy mode, use municipality name as part of the key
+      timeKey = 'best_time_easy_${widget.selectedMunicipality!.name}';
+    } else {
+      // For standard mode
+      timeKey = 'best_time_standard';
+    }
+    
+    // Get the current best time, if any
+    int? currentBestTime = prefs.getInt(timeKey);
+    
+    // Save only if it's better than the previous best time or if there's no previous best time
+    if (currentBestTime == null || _elapsedTimeInSeconds < currentBestTime) {
+      await prefs.setInt(timeKey, _elapsedTimeInSeconds);
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('New best time: ${_formatTime(_elapsedTimeInSeconds)}!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   void _initializeTargetMatrix() {
@@ -62,6 +134,13 @@ class _WineGameScreenState extends State<WineGameScreen> {
       }
       _placedWines.clear();
       _initializeTargetMatrix();
+      
+      // Reset game state
+      _gameCompleted = false;
+      
+      // Reset and restart timer
+      _resetTimer();
+      _startTimer();
     });
   }
 
@@ -70,6 +149,14 @@ class _WineGameScreenState extends State<WineGameScreen> {
       wine.isPlaced = true;
       _targetMatrix[classIndex][areaIndex].add(wine);
       _placedWines.add(wine);
+      
+      // Check if game is completed
+      if (_placedWines.length == _allWines.length) {
+        _gameCompleted = true;
+        _stopTimer();
+        _saveTime();
+        _showGameCompletionDialog();
+      }
     });
   }
 
@@ -82,7 +169,39 @@ class _WineGameScreenState extends State<WineGameScreen> {
         }
       }
       _placedWines.remove(wine);
+      
+      // Game is no longer complete
+      _gameCompleted = false;
     });
+  }
+
+  void _showGameCompletionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Congratulations!'),
+          content: Text('You completed the game in ${_formatTime(_elapsedTimeInSeconds)}!'),
+          actions: [
+            TextButton(
+              child: Text('Play Again'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _initializeWines();
+              },
+            ),
+            TextButton(
+              child: Text('Back to Menu'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Go back to previous screen
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -91,6 +210,15 @@ class _WineGameScreenState extends State<WineGameScreen> {
       appBar: AppBar(
         title: Text('Médoc 61 Fan Tan (1855) - ${widget.gameMode == GameMode.Easy ? "Easy Mode" : "Standard Mode"}'),
         actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Time: ${_formatTime(_elapsedTimeInSeconds)}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _initializeWines,
