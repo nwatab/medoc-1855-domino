@@ -60,7 +60,7 @@ class StartScreen extends StatelessWidget {
               },
               child: const Text('Standard Mode'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
